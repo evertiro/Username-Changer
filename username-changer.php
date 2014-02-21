@@ -111,6 +111,14 @@ if( !class_exists( 'Username_Changer' ) ) {
 
             // Add link to users.php    
             add_filter( 'user_row_actions', array( &$this, 'username_changer_link' ), 10, 2 );
+
+            if( is_multisite() ) {
+                // Add link to network/users.php
+                add_filter( 'ms_user_row_actions', array( &$this, 'username_changer_link' ), 10, 2 );
+
+                // Add network menu item
+                add_action( 'network_admin_menu', array( &$this, 'add_admin_menu' ) );
+            }
         }
 
 
@@ -151,7 +159,9 @@ if( !class_exists( 'Username_Changer' ) ) {
          */
         public function username_changer_link( $actions, $user ) {
             if( current_user_can( 'edit_users' ) ) {
-                $actions[] = '<a href="' . admin_url( 'users.php?page=username_changer&id=' . $user->ID ) . '">' . __( 'Change Username', 'username-changer' ) . '</a>';
+                if( !is_multisite() || ( is_multisite() && !is_network_admin() && !user_can( $user->ID, 'manage_network' ) ) || ( is_multisite() && is_network_admin() ) ) {
+                    $actions[] = '<a href="' . add_query_arg( array( 'page' => 'username_changer', 'id' => $user->ID ) ) . '">' . __( 'Change Username', 'username-changer' ) . '</a>';
+                }
             }
 
             return $actions;
@@ -207,42 +217,54 @@ if( !class_exists( 'Username_Changer' ) ) {
                 $new_username       = $wpdb->escape( $new_username );
                 $current_username   = $wpdb->escape( $_POST['current_username'] );
 
-                if( username_exists( $current_username ) && ( $new_username == $current_username ) ) {
-                    // Make sure username exists and username != new username
-                    echo '<div id="message" class="error"><p><strong>' . sprintf( __( 'Current Username and New Username cannot both be "%1$s"!', 'username-changer' ), $new_username ) . '</strong></p></div>';
-                } elseif( username_exists( $current_username ) && username_exists( $new_username ) ) {
-                    // Make sure new username doesn't exist
-                    echo '<div id="message" class="error"><p><strong>' . sprintf( __( '"%1$s" cannot be changed to "%2$s", "%3$s" already exists!', 'username-changer' ), $current_username, $new_username, $new_username ) . '</strong></p></div>';
-                } elseif( username_exists( $current_username ) && ( $new_username != $current_username ) ) {
-                    // Update username!
-                    $q          = $wpdb->prepare( "UPDATE $wpdb->users SET user_login = %s WHERE user_login = %s", $new_username, $current_username );
-                    $qnn        = $wpdb->prepare( "UPDATE $wpdb->users SET user_nicename = %s WHERE user_login = %s", $new_username, $new_username );
+                if( username_exists( $current_username ) ) {
+                    $current_user_data  = get_user_by( 'login', $current_username );
 
-                    // Check if display name is the same as username
-                    $usersql    = $wpdb->prepare( "SELECT * from $wpdb->users WHERE user_login = %s", $current_username );
-                    $userinfo   = $wpdb->get_row( $usersql );
+                    if( $new_username == $current_username ) {
+                        // Make sure username exists and username != new username
+                        echo '<div id="message" class="error"><p><strong>' . sprintf( __( 'Current Username and New Username cannot both be "%1$s"!', 'username-changer' ), $new_username ) . '</strong></p></div>';
+                    } elseif( username_exists( $new_username ) ) {
+                        // Make sure new username doesn't exist
+                        echo '<div id="message" class="error"><p><strong>' . sprintf( __( '"%1$s" cannot be changed to "%2$s", "%3$s" already exists!', 'username-changer' ), $current_username, $new_username, $new_username ) . '</strong></p></div>';
+                    } elseif( is_multisite() && user_can( $current_user_data->id, 'manage_network' ) && !is_network_admin() ) {
+                        // Super Admins must be changed from Network Dashboard
+                        echo '<div id="message" class="error"><p><strong>' . __( '"Super Admin usernames must be changed from the Network Dashboard!', 'username-changer' ) . '</strong></p></div>';
+                    } elseif( $new_username != $current_username ) {
+                        // Update username!
+                        $q          = $wpdb->prepare( "UPDATE $wpdb->users SET user_login = %s WHERE user_login = %s", $new_username, $current_username );
+                        $qnn        = $wpdb->prepare( "UPDATE $wpdb->users SET user_nicename = %s WHERE user_login = %s", $new_username, $new_username );
 
-                    // If display name is the same as username, update both
-                    if( $current_username == $userinfo->display_name ) {
-                        $qdn    = $wpdb->prepare( "UPDATE $wpdb->users SET display_name = %s WHERE user_login = %s", $new_username, $new_username );
-                    }
-                    
-                    if( false !== $wpdb->query( $q ) ) {
-                        $wpdb->query( $qnn );
+                        // Check if display name is the same as username
+                        $usersql    = $wpdb->prepare( "SELECT * from $wpdb->users WHERE user_login = %s", $current_username );
+                        $userinfo   = $wpdb->get_row( $usersql );
 
-                        if( isset( $qdn ) ) {
-                            $wpdb->query( $qdn );
+                        // If display name is the same as username, update both
+                        if( $current_username == $userinfo->display_name ) {
+                            $qdn    = $wpdb->prepare( "UPDATE $wpdb->users SET display_name = %s WHERE user_login = %s", $new_username, $new_username );
                         }
 
-                        // If changing own username, display link to re-login
-                        if( $current_user->user_login == $current_username ) {
-                            echo '<div id="message" class="updated fade"><p><strong>' . sprintf( __( 'Username %1$s was changed to %2$s.&nbsp;&nbsp;Click <a href="%3$s">here</a> to log back in.', 'username-changer' ), $current_username, $new_username, wp_login_url() ) . '</strong></p></div>';
+                        // If the user is a Super Admin, update their permissions
+                        if( is_multisite() && is_super_admin( $current_user_data->id ) ) {
+                            grant_super_admin( $current_user_data->id );
+                        }
+
+                        if( false !== $wpdb->query( $q ) ) {
+                            $wpdb->query( $qnn );
+
+                            if( isset( $qdn ) ) {
+                                $wpdb->query( $qdn );
+                            }
+
+                            // If changing own username, display link to re-login
+                            if( $current_user->user_login == $current_username ) {
+                                echo '<div id="message" class="updated fade"><p><strong>' . sprintf( __( 'Username %1$s was changed to %2$s.&nbsp;&nbsp;Click <a href="%3$s">here</a> to log back in.', 'username-changer' ), $current_username, $new_username, wp_login_url() ) . '</strong></p></div>';
+                            } else {
+                                echo '<div id="message" class="updated fade"><p><strong>' . sprintf( __( 'Username %1$s was changed to %2$s.', 'username-changer' ), $current_username, $new_username ) . '</strong></p></div>';
+                            }
                         } else {
-                            echo '<div id="message" class="updated fade"><p><strong>' . sprintf( __( 'Username %1$s was changed to %2$s.', 'username-changer' ), $current_username, $new_username ) . '</strong></p></div>';
+                            // If database error occurred, display it
+                            echo '<div id="message" class="error"><p><strong>' . sprintf( __( 'A database error occurred : %1$s', 'username-changer' ), $wpdb->last_error ) . '</strong></p></div>';
                         }
-                    } else {
-                        // If database error occurred, display it
-                        echo '<div id="message" class="error"><p><strong>' . sprintf( __( 'A database error occurred : %1$s', 'username-changer' ), $wpdb->last_error ) . '</strong></p></div>';
                     }
                 } else {
                     // Warn if user doesn't exist (this should never happen!)
@@ -292,7 +314,9 @@ if( !class_exists( 'Username_Changer' ) ) {
                                                 
                                             if( $userinfo ) {
                                                 foreach( $userinfo as $userinfoObj ) {
-                                                    echo '<option value="' . esc_attr( $userinfoObj->user_login ) . '">' . esc_html( $userinfoObj->user_login ) . ' (' . esc_html( $userinfoObj->user_email ) . ')</option>';
+                                                    if( !is_multisite() || ( is_multisite() && !is_network_admin() && !user_can( $userinfoObj->ID, 'manage_network' ) ) || ( is_multisite() && is_network_admin() ) ) {
+                                                        echo '<option value="' . esc_attr( $userinfoObj->user_login ) . '">' . esc_html( $userinfoObj->user_login ) . ' (' . esc_html( $userinfoObj->user_email ) . ')</option>';
+                                                    }
                                                 }
                                             }
 
