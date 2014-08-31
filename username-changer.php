@@ -232,7 +232,7 @@ if( !class_exists( 'Username_Changer' ) ) {
                     } elseif( $new_username != $current_username ) {
                         // Update username!
                         $q          = $wpdb->prepare( "UPDATE $wpdb->users SET user_login = %s WHERE user_login = %s", $new_username, $current_username );
-                        $qnn        = $wpdb->prepare( "UPDATE $wpdb->users SET user_nicename = %s WHERE user_login = %s", $new_username, $new_username );
+                        $qnn        = $wpdb->prepare( "UPDATE $wpdb->users SET user_nicename = %s WHERE user_login = %s", $new_username, strtolower( str_replace( ' ', '-', $new_username ) ) );
 
                         // Check if display name is the same as username
                         $usersql    = $wpdb->prepare( "SELECT * from $wpdb->users WHERE user_login = %s", $current_username );
