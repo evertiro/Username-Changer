@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Username Changer
  * Description:     Lets you change usernames. 
- * Version:         2.0.3
+ * Version:         2.0.4
  * Author:          Daniel J Griffiths
  * Author URI:      http://section214.com
  * Text Domain:     username-changer
@@ -134,14 +134,10 @@ if( !class_exists( 'Username_Changer' ) ) {
         public function plugin_metalinks( $links, $file ) {
             if( $file == plugin_basename( __FILE__ ) ) {
                 $help_link = array(
-                    '<a href="http://section214.com/support/forum/username-changer/" target="_blank">' . __( 'Support Forum', 'edd-balanced-gateway' ) . '</a>'
+                    '<a href="http://support.section214.com/community/forum/support/free-plugins/username-changer/" target="_blank">' . __( 'Support Forum', 'edd-balanced-gateway' ) . '</a>'
                 );
 
-                $docs_link = array(
-                    '<a href="http://section214.com/docs/category/username-changer/" target="_blank">' . __( 'Docs', 'edd-balanced-gateway' ) . '</a>'
-                );
-
-                $links = array_merge( $links, $help_link, $docs_link );
+                $links = array_merge( $links, $help_link );
             }
 
             return $links;
