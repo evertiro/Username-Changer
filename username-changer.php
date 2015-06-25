@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:     Username Changer
- * Description:     Lets you change usernames. 
+ * Description:     Lets you change usernames.
  * Version:         2.0.5
  * Author:          Daniel J Griffiths
  * Author URI:      http://section214.com
@@ -61,6 +61,20 @@ if( !class_exists( 'Username_Changer' ) ) {
             define( 'USERNAME_CHANGER_URL', plugin_dir_url( __FILE__ ) );
         }
 
+        /**
+         * Check if Co-Authors Plus Installed
+         *
+         * @access      private
+         * @since       2.0.0
+         * @return      boolean
+         */
+        private function coauthors_installed(){
+            if ( in_array( 'co-authors-plus/co-authors-plus.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         /**
          * Load plugin language files
@@ -109,7 +123,7 @@ if( !class_exists( 'Username_Changer' ) ) {
             // Add menu item
             add_action( 'admin_menu', array( &$this, 'add_admin_menu' ) );
 
-            // Add link to users.php    
+            // Add link to users.php
             add_filter( 'user_row_actions', array( &$this, 'username_changer_link' ), 10, 2 );
 
             if( is_multisite() ) {
@@ -146,7 +160,7 @@ if( !class_exists( 'Username_Changer' ) ) {
 
         /**
          * Add link to user page
-         * 
+         *
          * @access      public
          * @since       2.0.0
          * @param       array $actions The current user actions
@@ -174,12 +188,12 @@ if( !class_exists( 'Username_Changer' ) ) {
         public function add_admin_menu() {
             // Only admin-level users with the edit_users capability can change usernames
             add_submenu_page(
-                'users.php', 
-                __( 'Username Changer', 'username-changer' ), 
-                __( 'Username Changer', 'username-changer' ), 
-                'edit_users', 
-                'username_changer', 
-                array( &$this, 'add_admin_page' ) 
+                'users.php',
+                __( 'Username Changer', 'username-changer' ),
+                __( 'Username Changer', 'username-changer' ),
+                'edit_users',
+                'username_changer',
+                array( &$this, 'add_admin_page' )
             );
         }
 
@@ -251,6 +265,31 @@ if( !class_exists( 'Username_Changer' ) ) {
                                 $wpdb->query( $qdn );
                             }
 
+                            // Reassign Coauthor Attribution
+                            if( $this->coauthors_installed() ) {
+                                global $coauthors_plus;
+                                $coauthor_posts = get_posts(
+                                    array(
+                                        'post_type'         => get_post_types(),
+                                        'posts_per_page'    => -1,
+                                        'tax_query'         => array(
+                                            array(
+                                                'taxonomy'  => $coauthors_plus->coauthor_taxonomy,
+                                                'field'     => 'name',
+                                                'terms'     => $current_username
+                                            )
+                                        )
+                                    )
+                                );
+                                $current_term = get_term_by( 'name', $current_username, $coauthors_plus->coauthor_taxonomy );
+                                wp_delete_term( $current_term->term_id, $coauthors_plus->coauthor_taxonomy );
+                                if ( !empty( $coauthor_posts ) ) {
+                                    foreach ( $coauthor_posts as $coauthor_post ) {
+                                        $coauthors_plus->add_coauthors( $coauthor_post->ID, array( $new_username ), true );
+                                    }
+                                }
+                            }
+
                             // If changing own username, display link to re-login
                             if( $current_user->user_login == $current_username ) {
                                 echo '<div id="message" class="updated fade"><p><strong>' . sprintf( __( 'Username %1$s was changed to %2$s.&nbsp;&nbsp;Click <a href="%3$s">here</a> to log back in.', 'username-changer' ), $current_username, $new_username, wp_login_url() ) . '</strong></p></div>';
@@ -307,7 +346,7 @@ if( !class_exists( 'Username_Changer' ) ) {
 
                                             $usersql    = "SELECT * from $wpdb->users order by user_login asc";
                                             $userinfo   = $wpdb->get_results( $usersql );
-                                                
+
                                             if( $userinfo ) {
                                                 foreach( $userinfo as $userinfoObj ) {
                                                     if( !is_multisite() || ( is_multisite() && !is_network_admin() && !user_can( $userinfoObj->ID, 'manage_network' ) ) || ( is_multisite() && is_network_admin() ) ) {
