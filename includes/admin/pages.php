@@ -52,7 +52,7 @@ function username_changer_add_admin_page() {
 	global $wpdb, $userdata, $current_user;
 
 	// Get current user info
-	get_currentuserinfo();
+	$current_user = wp_get_current_user();
 
 	// Make SURE this user can edit users
 	if( current_user_can( 'edit_users' ) == false ) {
@@ -64,8 +64,8 @@ function username_changer_add_admin_page() {
 
 		// Sanitize the new username
 		$new_username     = sanitize_user( $_POST['new_username'] );
-		$new_username     = $wpdb->escape( $new_username );
-		$current_username = $wpdb->escape( $_POST['current_username'] );
+		$new_username     = esc_sql( $new_username );
+		$current_username = esc_sql( $_POST['current_username'] );
 
 		if( username_exists( $current_username ) ) {
 			$current_user_data  = get_user_by( 'login', $current_username );
