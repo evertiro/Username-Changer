@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Username Changer
  * Description:     Lets you change usernames.
- * Version:         2.1.0
+ * Version:         2.1.1
  * Author:          Daniel J Griffiths
  * Author URI:      http://section214.com
  * Text Domain:     username-changer
