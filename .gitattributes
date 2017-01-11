@@ -15,3 +15,11 @@ phpci.yml export-ignore
 phpunit.xml export-ignore
 readme.txt export-ignore
 /tests/ export-ignore
+/assets/screenshot-1.png export-ignore
+/assets/screenshot-2.gif export-ignore
+/assets/banner-1544x500-rtl.png export-ignore
+/assets/banner-1544x500.png export-ignore
+/assets/banner-772x250-rtl.png export-ignore
+/assets/banner-772x250.png export-ignore
+/assets/icon-128x128.png export-ignore
+/assets/icon-256x256.png export-ignore
