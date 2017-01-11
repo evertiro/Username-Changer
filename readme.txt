@@ -10,7 +10,7 @@ A simple plugin to change registered usernames.
 
 == Description ==
 
-Username Changer is a simple plugin which allows administrators to change usernames of users on their sites. Additionally, if the user display name matches the username, it is updated as well.
+hanging usernames should be a pretty straightforward feature. Unfortunately, WordPress doesn't allow it by default. Username Changer attempts to remedy that oversight.
 
 == Installation ==
 
