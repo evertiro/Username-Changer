@@ -6,7 +6,7 @@ Requires at least: 3.0
 Tested up to: 3.4.1
 Stable tag: 2.1.1
 
-A simple plugin to change registered usernames.
+Change usernames easily
 
 == Description ==
 
