@@ -1,10 +1,10 @@
 === Username Changer ===
 Contributors: section214
-Donate link: http://pledgie.com/campaigns/17372
-Tags: user, username, display name, changer
+Donate link: https://section214.com/donate/
+Tags: user, username, display name, login
 Requires at least: 3.0
-Tested up to: 3.4.1
-Stable tag: 2.1.1
+Tested up to: 4.7.1
+Stable tag: 3.0.0
 
 Change usernames easily
 
@@ -39,7 +39,7 @@ Yes! Username Changer works out of the box with Co-Authors Plus.
 
 == Changelog ==
 = Version 3.0.0 =
-* Improved: Replaced the clunky interface with an inline profile field
+* Improved: Replaced the clunky interface with an inline profile field (props: Danny van Kooten)
 * Added: Settings panel
 
 = Version 2.1.1 =
