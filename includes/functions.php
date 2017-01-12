@@ -88,6 +88,12 @@ function username_changer_process( $old_username, $new_username ) {
 			$qdn = $wpdb->prepare( "UPDATE $wpdb->users SET display_name = %s WHERE user_login = %s AND display_name = %s", $new_username, $new_username, $old_username );
 			$wpdb->query( $qdn );
 
+			// Update nickname
+			$nickname = get_user_meta( $user_id, 'nickname', true );
+			if ( $nickname == $old_username ) {
+				update_user_meta( $user_id, 'nickname', $new_username );
+			}
+
 			// If the user is a Super Admin, update their permissions
 			if ( is_multisite() && is_super_admin( $user_id ) ) {
 				grant_super_admin( $user_id );
