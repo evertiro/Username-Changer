@@ -164,7 +164,7 @@ jQuery(document.body).ready(function ($) {
         onSubmit : function(e) {
             e.preventDefault();
 
-            var newUsername, currentUsername, postData;
+            var newUsername, currentUsername, postData, error = true;
 
             newUsername = profileForm.new_user_login.value;
             currentUsername = currentUsernameInput.value;
@@ -205,15 +205,14 @@ jQuery(document.body).ready(function ($) {
                 success: function (response) {
                     if(response !== null) {
                         try {
-                            username_changer_vars.nonce = postData.new_nonce;
+                            username_changer_vars.nonce = response.new_nonce;
                             message.style.color = response.success ? 'green' : 'red';
                             message.innerHTML = response.message;
 
                             if(response.success) {
                                 currentUsernameInput.value = newUsername;
+                                error = false;
                             }
-
-                            cancelButton.click();
                         } catch(e) {
                             message.style.color = 'red';
                             message.textContent = username_changer_vars.error_unknown;
@@ -225,8 +224,17 @@ jQuery(document.body).ready(function ($) {
 
                     message.style.display = '';
 
-                    submitButton.value = username_changer_vars.save_button_label;
                     cancelButton.disabled = false;
+                    submitButton.value = username_changer_vars.save_button_label;
+
+                    if(error === false) {
+                        currentUsernameInput.value = newUsername;
+                        profileForm.style.display = 'none';
+                        link.style.display = 'inline';
+                        currentUsernameInput.style.display = '';
+
+                        return;
+                    }
                 }
             }).fail(function (data) {
                 if(window.console && window.console.log) {
