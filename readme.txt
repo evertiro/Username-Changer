@@ -1,66 +1,81 @@
 === Username Changer ===
 Contributors: section214
-Donate link: http://pledgie.com/campaigns/17372
-Tags: user, username, display name, changer
+Donate link: https://section214.com/donate/
+Tags: user, username, display name, login
 Requires at least: 3.0
-Tested up to: 3.4.1
-Stable tag: 2.1.1
+Tested up to: 4.7.1
+Stable tag: 3.0.0
 
-A simple plugin to change registered usernames.
+Change usernames easily
 
 == Description ==
 
-Username Changer is a simple plugin which allows administrators to change usernames of users on their sites. Additionally, if the user display name matches the username, it is updated as well.
+hanging usernames should be a pretty straightforward feature. Unfortunately, WordPress doesn't allow it by default. Username Changer attempts to remedy that oversight.
 
 == Installation ==
 
-1. Unzip the downloaded 'username-changer.zip' file
-2. Upload the 'username-changer' folder to '/wp-content/plugins' directory of your WordPress installation
-3. Activate the plugin via the WordPress Plugins page
+= From your WordPress dashboard =
+
+1. Visit 'Plugins > Add New'
+2. Search for 'Username Changer'
+3. Activate Username Changer from your Plugins page
+
+= From WordPress.org =
+
+1. Download Username Changer
+2. Upload the 'username-changer' folder to the '/wp-content/plugins' directory of your WordPress installation
+3. Activate Username Changer from your Plugins page
 
 == Frequently Asked Questions ==
 
-None yet
+= Is Username Changer compatible with <a href="https://wordpress.org/plugins/co-authors-plus/">Co-Authors Plus</a>? =
+
+Yes! Username Changer works out of the box with Co-Authors Plus.
 
 == Screenshots ==
 
-1. The main interface
+1. **Settings Panel** - The settings panel allows you to configure username rules and message string, as well as providing a simple method for contacting our support.
+2. **Changing A Username** - Since version 3.0.0, usernames are now changed through the user profile page.
 
 == Changelog ==
+= Version 3.0.0 =
+* Improved: Replaced the clunky interface with an inline profile field (props: Danny van Kooten)
+* Added: Settings panel
+
 = Version 2.1.1 =
 * Removed: Deprecated functions
 
 = Version 2.0.5 =
-* Fix contributor
+* Fixed: Contributor field
 
 = Version 2.0.4 =
-* Update metalinks
+* Updated: Plugin metalinks
 
 = Version 2.0.3 =
-* Fixed user nice name
+* Fixed: User nice name support
 
 = Version 2.0.2 =
-* Added multisite support
+* Added: multisite support
 
 = Version 2.0.1 =
-* Added username sanitization
-* Minor code cleanup
+* Added: Proper username sanitization
+* Improved: Minor code cleanup
 
 = Version 2.0.0 =
-* Converted to class-based structure
+* Improved: Converted to class-based structure
 
 = Version 1.4 =
-* Include author url (nicename) in update process
+* Added: Include author url (nicename) in update process
 
 = Version 1.3 =
-* Properly escaped vars on POST (I think)
+* Fixed: Properly escaped vars on POST (I think)
 
 = Version 1.2 =
-* Minor tweak to previous release
+* Fixed: Minor tweak to previous release
 
 = Version 1.1 =
-* Added action on All Users page
-* User dropdown is now sorted alphabetically
+* Added: Action on All Users page
+* Improved: User dropdown is now sorted alphabetically
 
 = Version 1.0 =
 * Initial release

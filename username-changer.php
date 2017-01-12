@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:     Username Changer
- * Description:     Lets you change usernames.
- * Version:         2.1.1
+ * Description:     Change usernames easily
+ * Version:         3.0.0
  * Author:          Daniel J Griffiths
  * Author URI:      http://section214.com
  * Text Domain:     username-changer
@@ -14,18 +14,41 @@
 
 
 // Exit if accessed directly
-if( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 
-if( ! class_exists( 'Username_Changer' ) ) {
+/**
+ * Main Username_Changer class
+ *
+ * @since       2.0.0
+ */
+if ( ! class_exists( 'Username_Changer' ) ) {
 
 	class Username_Changer {
+
 
 		/**
 		 * @var         Username_Changer $instance The one true Username_Changer
 		 * @since       2.0.0
 		 */
 		private static $instance;
+
+
+		/**
+		 * @var         object $settings The settings object
+		 * @since       3.0.0
+		 */
+		public $settings;
+
+
+		/**
+		 * @var         object $template_tags The template tags object
+		 * @since       3.0.0
+		 */
+		public $template_tags;
+
 
 		/**
 		 * Get active instance
@@ -35,11 +58,12 @@ if( ! class_exists( 'Username_Changer' ) ) {
 		 * @return      object self::$instance The one true Username_Changer
 		 */
 		public static function instance() {
-			if( ! self::$instance ) {
+			if ( ! self::$instance ) {
 				self::$instance = new Username_Changer();
 				self::$instance->setup_constants();
 				self::$instance->includes();
 				self::$instance->load_textdomain();
+				self::$instance->template_tags = new Username_Changer_Template_Tags();
 			}
 
 			return self::$instance;
@@ -59,6 +83,9 @@ if( ! class_exists( 'Username_Changer' ) ) {
 
 			// Plugin URL
 			define( 'USERNAME_CHANGER_URL', plugin_dir_url( __FILE__ ) );
+
+			// Plugin version
+			define( 'USERNAME_CHANGER_VER', '3.0.0' );
 		}
 
 
@@ -70,10 +97,22 @@ if( ! class_exists( 'Username_Changer' ) ) {
 		 * @return      void
 		 */
 		private function includes() {
-			if( is_admin() ) {
-				require_once USERNAME_CHANGER_DIR . 'includes/functions.php';
-				require_once USERNAME_CHANGER_DIR . 'includes/admin/pages.php';
-				require_once USERNAME_CHANGER_DIR . 'includes/admin/users/actions.php';
+			global $username_changer_options;
+
+			// Setup the plugin settings
+			require_once USERNAME_CHANGER_DIR . 'includes/admin/settings/register.php';
+			if ( ! class_exists( 'S214_Settings' ) ) {
+				require_once USERNAME_CHANGER_DIR . 'includes/libraries/s214-settings/source/class.s214-settings.php';
+			}
+			$this->settings           = new S214_Settings( 'username_changer', 'settings' );
+			$username_changer_options = $this->settings->get_settings();
+
+			require_once USERNAME_CHANGER_DIR . 'includes/functions.php';
+			require_once USERNAME_CHANGER_DIR . 'includes/scripts.php';
+			require_once USERNAME_CHANGER_DIR . 'includes/class.template-tags.php';
+
+			if ( is_admin() ) {
+				require_once USERNAME_CHANGER_DIR . 'includes/admin/actions.php';
 			}
 		}
 
@@ -95,13 +134,13 @@ if( ! class_exists( 'Username_Changer' ) ) {
 			$mofile = sprintf( '%1$s-%2$s.mo', 'username-changer', $locale );
 
 			// Setup paths to current locale file
-			$mofile_local = $lang_dir . $mofile;
+			$mofile_local  = $lang_dir . $mofile;
 			$mofile_global = WP_LANG_DIR . '/username-changer/' . $mofile;
 
-			if( file_exists( $mofile_global ) ) {
+			if ( file_exists( $mofile_global ) ) {
 				// Look in global /wp-content/languages/username-changer folder
 				load_textdomain( 'username-changer', $mofile_global );
-			} elseif( file_exists( $mofile_local ) ) {
+			} elseif ( file_exists( $mofile_local ) ) {
 				// Look in local /wp-content/plugins/username-changer/languages/ filder
 				load_textdomain( 'username-changer', $mofile_local );
 			} else {
@@ -115,12 +154,12 @@ if( ! class_exists( 'Username_Changer' ) ) {
 
 /**
  * The main function responsible for returning the one true Username_Changer
- * instance to functions everywhere
+ * instance to functions everywhere.
  *
  * @since       2.0.0
  * @return      Username_Changer The one true Username_Changer
  */
-function Username_Changer_load() {
+function username_changer() {
 	return Username_Changer::instance();
 }
-add_action( 'plugins_loaded', 'Username_Changer_load' );
+add_action( 'plugins_loaded', 'username_changer' );
