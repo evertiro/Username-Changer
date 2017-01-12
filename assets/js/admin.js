@@ -229,6 +229,15 @@ jQuery(document.body).ready(function ($) {
 
                     if(error === false) {
                         currentUsernameInput.value = newUsername;
+
+                        if($('input[name="nickname"]').val() === currentUsername) {
+                            $('input[name="nickname"]').val(newUsername);
+                        }
+
+                        if($('select[name="display_name"] option:selected').text() === currentUsername) {
+                            $('select[name="display_name"] option:selected').text(newUsername);
+                        }
+
                         profileForm.style.display = 'none';
                         link.style.display = 'inline';
                         currentUsernameInput.style.display = '';
