@@ -4,7 +4,7 @@ Donate link: https://section214.com/donate/
 Tags: user, username, display name, login
 Requires at least: 3.0
 Tested up to: 4.7.1
-Stable tag: 3.0.1
+Stable tag: 3.1.0
 
 Change usernames easily
 
@@ -38,6 +38,12 @@ Yes! Username Changer works out of the box with Co-Authors Plus.
 2. **Changing A Username** - Since version 3.0.0, usernames are now changed through the user profile page.
 
 == Changelog ==
++ Version 3.1.0 =
+* Added: Email notification support
+* Added: Nickname support
+* Improved: SQL performance
+* Improved: Dynamically update profile files
+
 = Version 3.0.1 =
 * Fixed: Typo in readme file
 
