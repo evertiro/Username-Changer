@@ -457,7 +457,7 @@ function username_changer_template_tag_date( $old_username, $new_username ) {
  * @return      string $name The first name of the user
  */
 function username_changer_template_tag_name( $old_username, $new_username ) {
-	$current_user = wp_get_current_user();
+	$current_user = get_user_by( 'login', $new_username );
 
 	if ( isset( $current_user->user_firstname ) ) {
 		$name = $current_user->user_firstname;
@@ -478,7 +478,7 @@ function username_changer_template_tag_name( $old_username, $new_username ) {
  * @return      string $name The full name of the user
  */
 function username_changer_template_tag_fullname( $old_username, $new_username ) {
-	$current_user = wp_get_current_user();
+	$current_user = get_user_by( 'login', $new_username );
 
 	if ( isset( $current_user->user_firstname ) && isset( $current_user->user_lastname ) ) {
 		$name = $current_user->user_firstname . ' ' . $current_user->user_lastname;

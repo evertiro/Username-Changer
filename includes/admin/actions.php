@@ -84,6 +84,25 @@ function username_changer_ajax_username_change() {
 			);
 		} else {
 			$response['message'] = username_changer_do_tags( username_changer()->settings->get_option( 'success_message', __( 'Username successfully changed to {new_username}.', 'username-changer' ) ), $old_username_tag, $new_username_tag );
+
+			// Send emails as necessary
+			if ( username_changer()->settings->get_option( 'enable_notifications', false ) ) {
+				$changed_user = get_user_by( 'login', $old_username );
+				$mail_to      = $changed_user->user_email;
+				$subject      = username_changer_do_tags( username_changer()->settings->get_option( 'email_subject', __( 'Username change notification - {sitename}', 'username-changer' ) ), $old_username_tag, $new_username_tag );
+				$message      = username_changer_do_tags( username_changer()->settings->get_option( 'email_message', __( 'Howdy! We\'re just writing to let you know that your username for {siteurl} has been changed to {new_username}.', 'username-changer' ) . "\n\n" . __( 'Login now at {loginurl}', 'username-changer' ) ), $old_username_tag, $new_username_tag );
+
+				$subject = stripslashes( $subject );
+				$message = stripslashes( $message );
+
+				$from_name  = get_bloginfo( 'name' );
+				$from_email = get_bloginfo( 'admin_email' );
+
+				$headers  = "From: " . stripslashes_deep( html_entity_decode( $from_name, ENT_COMPAT, 'UTF-8' ) ) . " <$from_email>\r\n";
+				$headers .= "Reply-To: ". $from_email . "\r\n";
+
+				wp_mail( $mail_to, $subject, $message, $headers );
+			}
 		}
 	} else {
 		$response['message'] = __( 'An unknown error occurred.', 'username-changer' );

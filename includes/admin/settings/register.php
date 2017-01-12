@@ -119,6 +119,40 @@ function username_changer_registered_settings( $settings ) {
 					'std'           => 3,
 					'tooltip_title' => __( 'Minimum Length', 'username-changer' ),
 					'tooltip_desc'  => __( 'The minimum allowed length for usernames is {minlength} characters.', 'username-changer' )
+				),
+				array(
+					'id'   => 'email_header',
+					'name' => __( 'Email Settings', 'username-changer' ),
+					'desc' => '',
+					'type' => 'header'
+				),
+				array(
+					'id'            => 'enable_notifications',
+					'name'          => __( 'Enable Email Notifications', 'username-changer' ),
+					'desc'          => __( 'Enable to send notification emails when usernames are changed.', 'username-changer' ),
+					'type'          => 'checkbox',
+					'tooltip_title' => __( 'Enable Email Notifications', 'username-changer' ),
+					'tooltip_desc'  => __( 'Notifications are not sent when a user changes their own username.', 'username-changer' )
+				),
+				array(
+					'id'   => 'email_subheader',
+					'name' => '',
+					'desc' => '',
+					'type' => 'hook'
+				),
+				array(
+					'id'   => 'email_subject',
+					'name' => __( 'Email Subject', 'username-changer' ),
+					'desc' => __( 'Specify the subject for username change notifications.', 'username-changer' ),
+					'type' => 'text',
+					'std'  => __( 'Username change notification - {sitename}', 'username-changer' ),
+				),
+				array(
+					'id' => 'email_message',
+					'name' => __( 'Email Message', 'username-changer' ),
+					'desc' => __( 'Specify the message to send for username change notifications.', 'username-changer' ),
+					'type' => 'editor',
+					'std' => __( 'Howdy! We\'re just writing to let you know that your username for {siteurl} has been changed to {new_username}.', 'username-changer' ) . "\n\n" . __( 'Login now at {loginurl}', 'username-changer' )
 				)
 			),
 			'strings' => array(
@@ -244,6 +278,24 @@ function username_changer_display_help() {
 	echo '<a href="https://section214.com/contact/?reason=product-support&product=username-changer&website=' . esc_url( get_site_url() ) . '" class="username-changer-get-help button button-secondary" target="_blank"><span class="dashicons dashicons-sos"></span>' . __( 'Submit a Ticket', 'username-changer' ) . '</a>';
 }
 add_action( 'username_changer_get_help', 'username_changer_display_help' );
+
+
+/**
+ * Display the subheader for the emails section
+ *
+ * @since       3.1.0
+ * @return      void
+ */
+function username_changer_display_email_subheader() {
+	?>
+	<div class="username-changer-settings-note">
+		<span class="note-title"><?php _e( 'Template Tags', 'username-changer' ); ?></span>
+		<p><?php _e( 'Emails allow the use of the following template tags:', 'username-changer' ); ?></p>
+		<?php echo username_changer_tags_list( 'email' ); ?>
+	</div>
+	<?php
+}
+add_action( 'username_changer_email_subheader', 'username_changer_display_email_subheader' );
 
 
 /**
