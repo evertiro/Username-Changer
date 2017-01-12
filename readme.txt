@@ -10,7 +10,7 @@ Change usernames easily
 
 == Description ==
 
-hanging usernames should be a pretty straightforward feature. Unfortunately, WordPress doesn't allow it by default. Username Changer attempts to remedy that oversight.
+Changing usernames should be a pretty straightforward feature. Unfortunately, WordPress doesn't allow it by default. Username Changer attempts to remedy that oversight.
 
 == Installation ==
 
