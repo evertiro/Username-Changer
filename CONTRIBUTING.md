@@ -4,12 +4,10 @@ Community made patches, localizations, bug reports and contributions are always 
 
 When contributing please ensure you follow the guidelines below so that we can keep on top of things.
 
-__Please Note:__ GitHub is for bug reports and contributions only - if you have a support question or a request for a customization don't post here, go to our [Support page](https://section214.com/contact/?reason=product-support&product=username-changer) instead.
-
 ## Getting Started
 
 * Submit a ticket for your issue, assuming one does not already exist.
-  * Raise it on our [Issue Tracker](https://github.com/section214/username-changer/issues)
+  * Raise it on our [Issue Tracker](https://github.com/evertiro/username-changer/issues)
   * Clearly describe the issue including steps to reproduce the bug.
   * Make sure you fill in the earliest version that you know has the issue as well as the version of WordPress you're using.
 

@@ -249,12 +249,6 @@ function username_changer_registered_settings( $settings ) {
 				'type' => 'header'
 			),
 			array(
-				'id'   => 'get_help',
-				'name' => __( 'Need Some Help?', 'username-changer' ),
-				'desc' => '',
-				'type' => 'hook'
-			),
-			array(
 				'id'   => 'system_info',
 				'name' => __( 'System Info', 'username-changer' ),
 				'desc' => '',
@@ -266,18 +260,6 @@ function username_changer_registered_settings( $settings ) {
 	return array_merge( $settings, $new_settings );
 }
 add_filter( 'username_changer_registered_settings', 'username_changer_registered_settings' );
-
-
-/**
- * Display the help link
- *
- * @since       3.0.0
- * @return      void
- */
-function username_changer_display_help() {
-	echo '<a href="https://section214.com/contact/?reason=product-support&product=username-changer&website=' . esc_url( get_site_url() ) . '" class="username-changer-get-help button button-secondary" target="_blank"><span class="dashicons dashicons-sos"></span>' . __( 'Submit a Ticket', 'username-changer' ) . '</a>';
-}
-add_action( 'username_changer_get_help', 'username_changer_display_help' );
 
 
 /**

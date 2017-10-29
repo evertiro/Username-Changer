@@ -2,13 +2,13 @@
 /**
  * Plugin Name:     Username Changer
  * Description:     Change usernames easily
- * Version:         3.1.0
+ * Version:         3.1.1
  * Author:          Daniel J Griffiths
- * Author URI:      http://section214.com
+ * Author URI:      https://evertiro.com
  * Text Domain:     username-changer
  *
  * @package         UsernameChanger
- * @author          Daniel J Griffiths <dgriffiths@section214.com>
+ * @author          Daniel J Griffiths <dgriffiths@evertiro.com>
  * @copyright       Copyright (c) 2014, Daniel J Griffiths
  */
 
@@ -85,7 +85,7 @@ if ( ! class_exists( 'Username_Changer' ) ) {
 			define( 'USERNAME_CHANGER_URL', plugin_dir_url( __FILE__ ) );
 
 			// Plugin version
-			define( 'USERNAME_CHANGER_VER', '3.1.0' );
+			define( 'USERNAME_CHANGER_VER', '3.1.1' );
 		}
 
 
