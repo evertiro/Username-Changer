@@ -4,7 +4,7 @@ Donate link: https://evertiro.com/donate/
 Tags: user, username, display name, login
 Requires at least: 3.0
 Tested up to: 4.7.1
-Stable tag: 3.1.1
+Stable tag: 3.1.2
 
 Change usernames easily
 
