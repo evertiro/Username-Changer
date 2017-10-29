@@ -124,6 +124,8 @@ class S214_Settings {
 
 		// Handle tooltips
 		add_filter( $this->func . '_after_setting_output', array( $this, 'add_setting_tooltip' ), 10, 2 );
+		
+		add_filter( "pre_update_option_{$this->func}_settings", array( $this, 'multicheck_empty_validation' ), 10, 3 );
 	}
 
 
@@ -797,6 +799,8 @@ class S214_Settings {
 
 		if( ! empty( $args['options'] ) ) {
 			$html = '';
+			
+			$html .= '<input type="hidden" name="' . $this->func . '_settings[_multicheck_fields][' . $args['id'] . ']' . '" value="' . $args['id'] . '">';
 
 			foreach( $args['options'] as $key => $option ) {
 				if( isset( ${$this->func . '_options'}[$args['id']][$key] ) ) {
@@ -1233,5 +1237,40 @@ class S214_Settings {
 		}
 
 		return $html;
+	}
+	
+	/**
+	 * Hooks in on option pre-save and checks for empty multicheck groups. If no checkboxes in a group are checked,
+	 * the info about the fields are never passed to the $_POST array, and the updates are never saved.
+	 *
+	 * For every multicheck group, a hidden field is added, which adds to an array called _multicheck_fields. In this
+	 * function, we loop through all of these to check if the field group is set at all - and if it is not, we set the
+	 * value to an empty array.
+	 *
+	 * @hooked pre_update_option_{$option} - 10
+	 * @see option.php
+	 *
+	 * @param $value The current value of the option
+	 * @param $old_value The previous value of the option
+	 * @param $option The options name
+	 *
+	 * @return mixed The (maybe) updated option to be saved
+	 */
+	public function multicheck_empty_validation( $value, $old_value, $option ) {
+		
+		if( ! isset( $_POST[ $this->func . '_settings' ][ '_multicheck_fields' ] ) || empty( isset( $_POST[ $this->func . '_settings' ][ '_multicheck_fields' ] ) ) ) {
+			
+			return $value;
+		}
+		
+		foreach( $_POST[ $this->func . '_settings' ][ '_multicheck_fields' ] as $multicheck_field_name ) {
+			
+			if( ! isset( $_POST[ $this->func . '_settings' ][ $multicheck_field_name ] ) || empty( $_POST[ $this->func . '_settings' ][ $multicheck_field_name ] ) ) {
+				
+				$value[ $multicheck_field_name ] = [];
+			}
+		}
+		
+		return $value;
 	}
 }
