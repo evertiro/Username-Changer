@@ -145,9 +145,10 @@ function username_changer_process( $old_username, $new_username ) {
 		 * @since       3.1.4
 		 * @param       string $old_username Old username that was changed.
 		 * @param       string $new_username New username to be used.
+		 * @param       int $user_id User ID.
 		 * @param       bool $return Value to be returned with the status of the change.
 		 */
-		do_action( 'username_changer_after_process', $old_username, $new_username, $return );
+		do_action( 'username_changer_after_process', $old_username, $new_username, $user_id, $return );
 
 		return $return;
 	}
