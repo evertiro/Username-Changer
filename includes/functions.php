@@ -73,6 +73,15 @@ function username_changer_process( $old_username, $new_username ) {
 
 	$return = false;
 
+	/**
+	 * Hook fired before username will be changed
+	 *
+	 * @since       3.1.4
+	 * @param       string $old_username Old username that was changed.
+	 * @param       string $new_username New username to be used.
+	 */
+	do_action( 'username_changer_before_process', $old_username, $new_username );
+
 	// One last sanity check to ensure the user exists
 	$user_id = username_exists( $old_username );
 	if ( $user_id ) {
@@ -129,6 +138,17 @@ function username_changer_process( $old_username, $new_username ) {
 
 			$return = true;
 		}
+
+		/**
+		 * Hook fired after username has been changed
+		 *
+		 * @since       3.1.4
+		 * @param       string $old_username Old username that was changed.
+		 * @param       string $new_username New username to be used.
+		 * @param       int $user_id User ID.
+		 * @param       bool $return Value to be returned with the status of the change.
+		 */
+		do_action( 'username_changer_after_process', $old_username, $new_username, $user_id, $return );
 
 		return $return;
 	}

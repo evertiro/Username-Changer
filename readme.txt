@@ -39,6 +39,9 @@ Yes! Username Changer works out of the box with Co-Authors Plus.
 
 == Changelog ==
 
+= Version 3.1.3 =
+* Added: Hooks username_changer_before_process and username_changer_after_process
+
 = Version 3.1.1 =
 * Fixed: Issue with multicheck settings fields
 
