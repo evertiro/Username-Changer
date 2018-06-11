@@ -977,7 +977,7 @@ class S214_Settings {
 		global ${$this->func . '_options'};
 
 		if( ! isset( ${$this->func . '_options'}[$args['tab']] ) || ( isset( ${$this->func . '_options'}[$args['tab']] ) && isset( $_GET['tab'] ) && $_GET['tab'] == ${$this->func . '_options'}[$args['tab']] ) ) {
-			$html  = '<textarea readonly="readonly" onclick="this.focus(); this.select()" id="system-info-textarea" name="' . $this->func . '-system-info" title="' . __( 'To copy the system info, click below then press Ctrl + C (PC) or Cmd + C (Mac).', 's214-settings' ) . '">' . $this->sysinfo->get_system_info() . '</textarea>';
+			$html  = '<textarea cols="120" rows="25" readonly="readonly" onclick="this.focus(); this.select()" id="system-info-textarea" name="' . $this->func . '-system-info" title="' . __( 'To copy the system info, click below then press Ctrl + C (PC) or Cmd + C (Mac).', 's214-settings' ) . '">' . $this->sysinfo->get_system_info() . '</textarea>';
 			$html .= '<p class="submit">';
 			$html .= '<input type="hidden" name="' . $this->slug . '-settings-action" value="download_system_info" />';
 			$html .= '<a class="button button-primary" href="' . add_query_arg( $this->slug . '-settings-action', 'download_system_info' ) . '">' . __( 'Download System Info File', 's214-settings' ) . '</a>';
@@ -1232,7 +1232,7 @@ class S214_Settings {
 	 */
 	function add_setting_tooltip( $html, $args ) {
 		if( ! empty( $args['tooltip_title'] ) && ! empty( $args['tooltip_desc'] ) ) {
-			$tooltip = '<span alt="f223" class="s214-help-tip dashicons dashicons-editor-help" title="<strong>' . $args['tooltip_title'] . '</strong>: ' . $args['tooltip_desc'] . '"></span>';
+			$tooltip = '<span alt="f223" class="s214-help-tip dashicons dashicons-editor-help" title="' . $args['tooltip_title'] . ': ' . $args['tooltip_desc'] . '"></span>';
 			$html .= $tooltip;
 		}
 
